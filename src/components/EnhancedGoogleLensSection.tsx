@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, Image, CheckCircle, AlertCircle, X, Eye, Loader, Zap, Cloud, Cpu, Globe, Star } from 'lucide-react'
+import { Upload, Image, CheckCircle, AlertCircle, X, Eye, Loader, Cloud, Globe } from 'lucide-react'
 import { validateImageFile } from '../utils/textExtraction'
-import { smartOCR, OCRResult } from '../utils/smartOCR'
+import { googleVisionOCR, OCRResult } from '../utils/googleVisionOCR'
+import { parseFeedbackText, ParsedFeedback } from '../utils/textParsing'
 
 interface EnhancedGoogleLensSectionProps {
   onTextExtracted: (text: string) => void
@@ -16,11 +17,10 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
   const [processingProgress, setProcessingProgress] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [ocrResult, setOcrResult] = useState<OCRResult | null>(null)
+  const [parsedFeedbacks, setParsedFeedbacks] = useState<ParsedFeedback[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const availableServices = smartOCR.getAvailableServices()
-  const hasExternalServices = smartOCR.hasExternalServices()
-  const isOCRSpacePrimary = smartOCR.isPrimaryServiceOCRSpace()
+  const serviceInfo = googleVisionOCR.getServiceInfo()
 
   const handleTextSubmit = () => {
     if (extractedText.trim()) {
@@ -29,6 +29,7 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
       setUploadedImage(null)
       setError(null)
       setOcrResult(null)
+      setParsedFeedbacks([])
     }
   }
 
@@ -60,8 +61,8 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
         })
       }, 200)
 
-      // Extract text using smart OCR (OCR.space first!)
-      const result = await smartOCR.extractText(file)
+      // Extract text using Google Vision API
+      const result = await googleVisionOCR.extractText(file)
       
       clearInterval(progressInterval)
       setProcessingProgress(100)
@@ -70,6 +71,10 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
       setExtractedText(result.text)
       setOcrResult(result)
       setIsProcessing(false)
+      
+      // Try to parse feedback automatically
+      const feedbacks = parseFeedbackText(result.text)
+      setParsedFeedbacks(feedbacks)
       
       if (!result.text.trim()) {
         setError('No text could be extracted from the image. Please ensure the image contains clear, readable text.')
@@ -117,23 +122,34 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
     setIsProcessing(false)
     setProcessingProgress(0)
     setOcrResult(null)
+    setParsedFeedbacks([])
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
-  }
-
-  const getServiceIcon = (serviceName: string) => {
-    if (serviceName.includes('OCR.space')) return <Star className="w-4 h-4" />
-    if (serviceName.includes('OpenAI')) return <Zap className="w-4 h-4" />
-    if (serviceName.includes('Google')) return <Cloud className="w-4 h-4" />
-    if (serviceName.includes('Azure')) return <Cloud className="w-4 h-4" />
-    return <Cpu className="w-4 h-4" />
   }
 
   const getConfidenceColor = (confidence: number) => {
     if (confidence >= 0.9) return 'text-green-600 bg-green-100'
     if (confidence >= 0.7) return 'text-yellow-600 bg-yellow-100'
     return 'text-red-600 bg-red-100'
+  }
+
+  const getFeedbackTypeColor = (type: string) => {
+    switch (type) {
+      case 'good': return 'bg-green-100 text-green-800 border-green-200'
+      case 'bad': return 'bg-red-100 text-red-800 border-red-200'
+      case 'observational': return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+      default: return 'bg-gray-100 text-gray-800 border-gray-200'
+    }
+  }
+
+  const getFeedbackTypeName = (type: string) => {
+    switch (type) {
+      case 'good': return 'Positive'
+      case 'bad': return 'Needs Improvement'
+      case 'observational': return 'Observational'
+      default: return type
+    }
   }
 
   return (
@@ -158,53 +174,42 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
           <Eye className="w-10 h-10 text-blue-600" />
         </motion.div>
         
-        <h3 className="text-2xl font-bold text-gray-900 mb-3">🚀 OCR.space AI Text Extraction</h3>
+        <h3 className="text-2xl font-bold text-gray-900 mb-3">🚀 Google Vision AI Text Extraction</h3>
         <p className="text-gray-600 mb-4 max-w-lg mx-auto text-lg">
-          Upload an image and we'll extract text using <span className="font-bold text-blue-600">OCR.space's premium AI</span>
+          Upload an image and we'll extract text using <span className="font-bold text-blue-600">Google Cloud Vision API</span>
         </p>
 
-        {/* OCR.space Status */}
+        {/* Google Vision Status */}
         <div className="mb-6">
-          {isOCRSpacePrimary ? (
+          {serviceInfo.isAvailable ? (
             <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <Star className="w-5 h-5 text-green-600" />
-                <span className="font-bold text-green-800">OCR.space API Active!</span>
-                <Star className="w-5 h-5 text-green-600" />
+                <Cloud className="w-5 h-5 text-green-600" />
+                <span className="font-bold text-green-800">Google Vision API Active!</span>
+                <Globe className="w-5 h-5 text-green-600" />
               </div>
               <p className="text-green-700 text-sm">
-                🎉 Your premium OCR.space service is configured and ready! This will provide superior text recognition accuracy.
+                🎉 Your Google Cloud Vision API is configured and ready! This provides industry-leading text recognition accuracy.
               </p>
             </div>
           ) : (
             <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <AlertCircle className="w-5 h-5 text-red-600" />
-                <span className="font-bold text-red-800">OCR.space Not Configured</span>
+                <span className="font-bold text-red-800">Google Vision API Not Configured</span>
               </div>
               <p className="text-red-700 text-sm">
-                ⚠️ OCR.space API key not found. Please check your .env file configuration.
+                ⚠️ Google Vision API key not found. Please add VITE_GOOGLE_VISION_API_KEY to your .env file.
               </p>
             </div>
           )}
 
-          <div className="flex flex-wrap justify-center gap-2 mb-3">
-            {availableServices.map((service, index) => (
-              <span 
-                key={service}
-                className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
-                  service.includes('OCR.space')
-                    ? 'bg-green-100 text-green-800 border border-green-300'
-                    : index === 0 && hasExternalServices
-                    ? 'bg-blue-100 text-blue-800 border border-blue-300'
-                    : 'bg-gray-100 text-gray-700 border border-gray-300'
-                }`}
-              >
-                {getServiceIcon(service)}
-                {service}
-                {service.includes('OCR.space') && <Star className="w-3 h-3 ml-1" />}
-              </span>
-            ))}
+          <div className="flex justify-center mb-3">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-300">
+              <Cloud className="w-4 h-4" />
+              Google Cloud Vision API
+              <Globe className="w-4 h-4" />
+            </span>
           </div>
         </div>
 
@@ -269,7 +274,7 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
                 <span className="font-bold text-green-800">Image Uploaded</span>
                 {ocrResult && (
                   <div className="flex items-center gap-2">
-                    {getServiceIcon(ocrResult.service)}
+                    <Cloud className="w-4 h-4 text-blue-600" />
                     <span className="text-sm text-gray-600">{ocrResult.service}</span>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getConfidenceColor(ocrResult.confidence)}`}>
                       {Math.round(ocrResult.confidence * 100)}% confidence
@@ -313,7 +318,7 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
                       <Loader className="w-5 h-5 text-blue-600" />
                     </motion.div>
                     <span className="font-bold text-blue-800 text-sm">
-                      {isOCRSpacePrimary ? '🚀 Processing with OCR.space...' : 'Processing with AI...'}
+                      🚀 Processing with Google Vision API...
                     </span>
                   </div>
                   
@@ -333,31 +338,23 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
             {/* Processing Results */}
             {ocrResult && !isProcessing && (
               <motion.div
-                className={`p-4 rounded-xl border-2 mb-4 ${
-                  ocrResult.service.includes('OCR.space') 
-                    ? 'bg-green-50 border-green-200' 
-                    : 'bg-blue-50 border-blue-200'
-                }`}
+                className="p-4 rounded-xl border-2 mb-4 bg-blue-50 border-blue-200"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
-                    {getServiceIcon(ocrResult.service)}
-                    <span className={`font-semibold ${
-                      ocrResult.service.includes('OCR.space') ? 'text-green-800' : 'text-blue-800'
-                    }`}>
+                    <Cloud className="w-4 h-4 text-blue-600" />
+                    <span className="font-semibold text-blue-800">
                       Processed by {ocrResult.service}
                     </span>
-                    {ocrResult.service.includes('OCR.space') && <Star className="w-4 h-4 text-green-600" />}
+                    <Globe className="w-4 h-4 text-blue-600" />
                   </div>
                   <div className="flex items-center gap-3">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getConfidenceColor(ocrResult.confidence)}`}>
                       {Math.round(ocrResult.confidence * 100)}% confidence
                     </span>
-                    <span className={`text-xs ${
-                      ocrResult.service.includes('OCR.space') ? 'text-green-600' : 'text-blue-600'
-                    }`}>
+                    <span className="text-xs text-blue-600">
                       {ocrResult.processingTime}ms
                     </span>
                   </div>
@@ -366,6 +363,48 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
             )}
           </motion.div>
         )}
+
+        {/* Auto-parsed Feedback Preview */}
+        <AnimatePresence>
+          {parsedFeedbacks.length > 0 && (
+            <motion.div
+              className="bg-green-50 rounded-2xl p-6 border border-green-200 shadow-sm mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <CheckCircle className="w-6 h-6 text-green-600" />
+                <h4 className="font-bold text-green-900 text-lg">Auto-Parsed Feedback Found!</h4>
+                <span className="bg-green-200 text-green-800 px-3 py-1 rounded-full text-sm font-bold">
+                  {parsedFeedbacks.length} entries
+                </span>
+              </div>
+              
+              <div className="space-y-3 mb-4">
+                {parsedFeedbacks.map((feedback, index) => (
+                  <div
+                    key={index}
+                    className="bg-white rounded-xl p-4 border-2 border-gray-200 shadow-sm"
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className={`px-3 py-1 rounded-lg text-sm font-bold border-2 ${getFeedbackTypeColor(feedback.type)}`}>
+                        {getFeedbackTypeName(feedback.type)}
+                      </span>
+                      <div className="flex-1">
+                        <p className="text-gray-700 leading-relaxed">{feedback.text}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <p className="text-green-700 text-sm mb-4">
+                ✨ We automatically detected structured feedback! You can process this directly or edit the text below.
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Text Input Area */}
         <AnimatePresence>

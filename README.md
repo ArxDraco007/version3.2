@@ -1,24 +1,25 @@
 # Vanguard Feedback System
 
-A modern, AI-powered feedback collection system for Vanguard candidates with advanced text extraction capabilities.
+A modern, AI-powered feedback collection system for Vanguard candidates with Google Cloud Vision API text extraction.
 
 ## Features
 
 - **Modern UI/UX**: Beautiful, responsive design with smooth animations
-- **AI-Powered OCR**: Multiple AI services for accurate text extraction from images
+- **Google Vision AI**: Industry-leading text extraction from images using Google Cloud Vision API
 - **Smart Text Parsing**: Automatically parse structured feedback from extracted text
 - **Real-time Analytics**: Visual feedback statistics and progress tracking
 - **Secure Database**: Supabase integration with row-level security
 
 ## AI Text Extraction
 
-The system supports multiple AI services for optimal text recognition:
+The system uses Google Cloud Vision API for optimal text recognition with industry-leading accuracy.
 
-### Supported Services (in order of preference):
-1. **OpenAI GPT-4 Vision** (Recommended) - Best for handwritten text and complex layouts
-2. **Google Cloud Vision API** - Excellent for printed text and documents
-3. **Azure Computer Vision** - Alternative enterprise option
-4. **Tesseract.js** - Local fallback (no API key required)
+### Google Cloud Vision API Features:
+- **High Accuracy**: Best-in-class text detection and recognition
+- **Multiple Languages**: Support for 50+ languages
+- **Handwriting Recognition**: Advanced OCR for handwritten text
+- **Document Understanding**: Intelligent text structure detection
+- **Fast Processing**: Quick response times for real-time applications
 
 ### Setup Instructions
 
@@ -40,11 +41,8 @@ The system supports multiple AI services for optimal text recognition:
    VITE_SUPABASE_URL=your_supabase_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
    
-   # AI Services (Optional - for enhanced OCR)
-   VITE_OPENAI_API_KEY=your_openai_api_key
+   # Google Cloud Vision API (Required for OCR)
    VITE_GOOGLE_VISION_API_KEY=your_google_vision_api_key
-   VITE_AZURE_VISION_API_KEY=your_azure_vision_api_key
-   VITE_AZURE_VISION_ENDPOINT=your_azure_vision_endpoint
    ```
 
 3. **Database Setup**
@@ -56,29 +54,37 @@ The system supports multiple AI services for optimal text recognition:
    npm run dev
    ```
 
-## AI Service Setup
+## Google Cloud Vision API Setup
 
-### OpenAI GPT-4 Vision (Recommended)
-1. Get API key from [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Add to `.env`: `VITE_OPENAI_API_KEY=sk-...`
-3. Best for: Handwritten text, complex layouts, mixed content
+### Getting Your API Key
 
-### Google Cloud Vision
-1. Create project in [Google Cloud Console](https://console.cloud.google.com/)
-2. Enable Vision API
-3. Create API key
-4. Add to `.env`: `VITE_GOOGLE_VISION_API_KEY=...`
-5. Best for: Printed text, documents, high accuracy
+1. **Create a Google Cloud Project**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or select an existing one
 
-### Azure Computer Vision
-1. Create resource in [Azure Portal](https://portal.azure.com/)
-2. Get API key and endpoint
-3. Add to `.env`:
-   ```
-   VITE_AZURE_VISION_API_KEY=...
-   VITE_AZURE_VISION_ENDPOINT=https://...
-   ```
-4. Best for: Enterprise environments, batch processing
+2. **Enable the Vision API**
+   - Navigate to "APIs & Services" > "Library"
+   - Search for "Cloud Vision API"
+   - Click "Enable"
+
+3. **Create API Credentials**
+   - Go to "APIs & Services" > "Credentials"
+   - Click "Create Credentials" > "API Key"
+   - Copy your API key
+
+4. **Configure Environment**
+   - Add to `.env`: `VITE_GOOGLE_VISION_API_KEY=your_api_key_here`
+
+5. **Set Up Billing (Required)**
+   - Google Cloud Vision API requires a billing account
+   - Go to "Billing" in the Google Cloud Console
+   - Set up billing for your project
+
+### API Usage and Pricing
+
+- **Free Tier**: 1,000 units per month
+- **Pricing**: $1.50 per 1,000 units after free tier
+- **Rate Limits**: 600 requests per minute per project
 
 ## Supported Text Formats
 
@@ -101,7 +107,7 @@ Positive: Shows great empathy
 2. **Choose Class Type**: Inside Class (modules) or Outside Class
 3. **Add Feedback**: 
    - Manual entry, or
-   - Upload image with AI text extraction
+   - Upload image with Google Vision AI text extraction
 4. **Review Analytics**: View feedback statistics and trends
 
 ## Technology Stack
@@ -109,8 +115,24 @@ Positive: Shows great empathy
 - **Frontend**: React, TypeScript, Tailwind CSS, Framer Motion
 - **3D Graphics**: Three.js, React Three Fiber
 - **Database**: Supabase (PostgreSQL)
-- **AI/OCR**: OpenAI GPT-4V, Google Vision, Azure CV, Tesseract.js
+- **AI/OCR**: Google Cloud Vision API
 - **Build Tool**: Vite
+
+## Troubleshooting
+
+### Common Issues
+
+1. **"Google Vision API Not Configured"**
+   - Ensure `VITE_GOOGLE_VISION_API_KEY` is set in your `.env` file
+   - Verify the API key is correct and has Vision API access
+
+2. **"API Error: 403 Forbidden"**
+   - Check that billing is enabled for your Google Cloud project
+   - Verify the Vision API is enabled
+
+3. **"No text detected"**
+   - Ensure the image contains clear, readable text
+   - Try images with higher contrast and resolution
 
 ## Contributing
 
