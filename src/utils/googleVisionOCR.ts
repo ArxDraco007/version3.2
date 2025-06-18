@@ -1,25 +1,24 @@
-// Google Cloud Vision API integration - Single OCR service
+// Google Cloud Vision API integration with Service Account Authentication
+import { googleAuth } from './googleAuth'
+
 export interface OCRResult {
   text: string
   confidence: number
   service: string
   processingTime: number
+  authMethod: string
 }
 
 export class GoogleVisionOCR {
-  private apiKey: string
-
-  constructor(apiKey?: string) {
-    this.apiKey = apiKey || import.meta.env.VITE_GOOGLE_VISION_API_KEY || ''
-  }
+  constructor() {}
 
   isAvailable(): boolean {
-    return !!this.apiKey
+    return googleAuth.isAvailable()
   }
 
   async extractText(imageFile: File): Promise<OCRResult> {
     if (!this.isAvailable()) {
-      throw new Error('Google Vision API key not configured. Please add VITE_GOOGLE_VISION_API_KEY to your .env file.')
+      throw new Error('Google Vision API not configured. Please add VITE_GOOGLE_VISION_API_KEY or VITE_GOOGLE_SERVICE_ACCOUNT to your .env file.')
     }
 
     const startTime = Date.now()
@@ -27,14 +26,35 @@ export class GoogleVisionOCR {
     try {
       console.log('🚀 Starting Google Vision API text extraction...')
       
+      // Get authentication token/key
+      const authToken = await googleAuth.getAccessToken()
+      const authMethod = googleAuth.getAuthMethod()
+      
+      console.log(`🔐 Using ${authMethod} authentication`)
+      
       // Convert file to base64
       const base64Image = await this.fileToBase64(imageFile)
       
-      const response = await fetch(`https://vision.googleapis.com/v1/images:annotate?key=${this.apiKey}`, {
-        method: 'POST',
-        headers: {
+      // Prepare request URL and headers based on auth method
+      let url: string
+      let headers: Record<string, string>
+      
+      if (authMethod === 'API Key') {
+        url = `https://vision.googleapis.com/v1/images:annotate?key=${authToken}`
+        headers = {
           'Content-Type': 'application/json',
-        },
+        }
+      } else {
+        url = 'https://vision.googleapis.com/v1/images:annotate'
+        headers = {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        }
+      }
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers,
         body: JSON.stringify({
           requests: [{
             image: {
@@ -70,7 +90,8 @@ export class GoogleVisionOCR {
           text: extractedText,
           confidence: 0.95, // Google Vision typically has high confidence
           service: 'Google Cloud Vision API',
-          processingTime
+          processingTime,
+          authMethod
         }
       }
       
@@ -94,10 +115,16 @@ export class GoogleVisionOCR {
   }
 
   getServiceInfo() {
+    const authMethod = googleAuth.getAuthMethod()
     return {
       name: 'Google Cloud Vision API',
       isAvailable: this.isAvailable(),
-      description: 'Google\'s powerful OCR service with high accuracy for text detection'
+      authMethod,
+      description: authMethod === 'Service Account' 
+        ? 'Google\'s powerful OCR service with service account authentication (recommended for production)'
+        : authMethod === 'API Key'
+        ? 'Google\'s powerful OCR service with API key authentication'
+        : 'Google Cloud Vision API not configured'
     }
   }
 }

@@ -6,6 +6,7 @@ A modern, AI-powered feedback collection system for Vanguard candidates with Goo
 
 - **Modern UI/UX**: Beautiful, responsive design with smooth animations
 - **Google Vision AI**: Industry-leading text extraction from images using Google Cloud Vision API
+- **Flexible Authentication**: Support for both API Key and Service Account authentication
 - **Smart Text Parsing**: Automatically parse structured feedback from extracted text
 - **Real-time Analytics**: Visual feedback statistics and progress tracking
 - **Secure Database**: Supabase integration with row-level security
@@ -20,6 +21,7 @@ The system uses Google Cloud Vision API for optimal text recognition with indust
 - **Handwriting Recognition**: Advanced OCR for handwritten text
 - **Document Understanding**: Intelligent text structure detection
 - **Fast Processing**: Quick response times for real-time applications
+- **Flexible Authentication**: API Key or Service Account authentication
 
 ### Setup Instructions
 
@@ -41,8 +43,13 @@ The system uses Google Cloud Vision API for optimal text recognition with indust
    VITE_SUPABASE_URL=your_supabase_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
    
-   # Google Cloud Vision API (Required for OCR)
+   # Google Cloud Vision API (Choose one method)
+   
+   # Method 1: API Key (Simple)
    VITE_GOOGLE_VISION_API_KEY=your_google_vision_api_key
+   
+   # Method 2: Service Account (Recommended for production)
+   VITE_GOOGLE_SERVICE_ACCOUNT={"type":"service_account","project_id":"your-project",...}
    ```
 
 3. **Database Setup**
@@ -56,7 +63,7 @@ The system uses Google Cloud Vision API for optimal text recognition with indust
 
 ## Google Cloud Vision API Setup
 
-### Getting Your API Key
+### Method 1: API Key Authentication (Simple)
 
 1. **Create a Google Cloud Project**
    - Go to [Google Cloud Console](https://console.cloud.google.com/)
@@ -75,10 +82,34 @@ The system uses Google Cloud Vision API for optimal text recognition with indust
 4. **Configure Environment**
    - Add to `.env`: `VITE_GOOGLE_VISION_API_KEY=your_api_key_here`
 
-5. **Set Up Billing (Required)**
-   - Google Cloud Vision API requires a billing account
-   - Go to "Billing" in the Google Cloud Console
-   - Set up billing for your project
+### Method 2: Service Account Authentication (Recommended)
+
+1. **Create a Service Account**
+   - Go to "IAM & Admin" > "Service Accounts"
+   - Click "Create Service Account"
+   - Give it a name and description
+
+2. **Grant Permissions**
+   - Add the "Cloud Vision API User" role
+   - Click "Done"
+
+3. **Create and Download Key**
+   - Click on your service account
+   - Go to "Keys" tab
+   - Click "Add Key" > "Create New Key"
+   - Choose JSON format and download
+
+4. **Configure Environment**
+   - Copy the entire JSON content
+   - Add to `.env`: `VITE_GOOGLE_SERVICE_ACCOUNT={"type":"service_account",...}`
+   - Or upload the JSON file to your project (for development only)
+
+### Important Security Notes
+
+- **API Keys**: Suitable for development and client-side applications
+- **Service Accounts**: More secure, recommended for production environments
+- **Never commit credentials**: Always use environment variables
+- **Restrict API Keys**: Set up API key restrictions in Google Cloud Console
 
 ### API Usage and Pricing
 
@@ -116,6 +147,7 @@ Positive: Shows great empathy
 - **3D Graphics**: Three.js, React Three Fiber
 - **Database**: Supabase (PostgreSQL)
 - **AI/OCR**: Google Cloud Vision API
+- **Authentication**: API Key or Service Account
 - **Build Tool**: Vite
 
 ## Troubleshooting
@@ -123,16 +155,22 @@ Positive: Shows great empathy
 ### Common Issues
 
 1. **"Google Vision API Not Configured"**
-   - Ensure `VITE_GOOGLE_VISION_API_KEY` is set in your `.env` file
-   - Verify the API key is correct and has Vision API access
+   - Ensure either `VITE_GOOGLE_VISION_API_KEY` or `VITE_GOOGLE_SERVICE_ACCOUNT` is set in your `.env` file
+   - Verify the credentials are correct and have Vision API access
 
 2. **"API Error: 403 Forbidden"**
    - Check that billing is enabled for your Google Cloud project
    - Verify the Vision API is enabled
+   - For Service Accounts, ensure proper IAM roles are assigned
 
 3. **"No text detected"**
    - Ensure the image contains clear, readable text
    - Try images with higher contrast and resolution
+
+4. **Service Account Authentication Issues**
+   - Verify the JSON format is correct
+   - Check that the service account has the "Cloud Vision API User" role
+   - Ensure the private key is properly formatted
 
 ## Contributing
 

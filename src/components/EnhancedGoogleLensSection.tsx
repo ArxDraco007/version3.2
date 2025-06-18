@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, Image, CheckCircle, AlertCircle, X, Eye, Loader, Cloud, Globe } from 'lucide-react'
+import { Upload, Image, CheckCircle, AlertCircle, X, Eye, Loader, Cloud, Globe, Shield, Key } from 'lucide-react'
 import { validateImageFile } from '../utils/textExtraction'
 import { googleVisionOCR, OCRResult } from '../utils/googleVisionOCR'
 import { parseFeedbackText, ParsedFeedback } from '../utils/textParsing'
@@ -152,6 +152,18 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
     }
   }
 
+  const getAuthIcon = (authMethod: string) => {
+    if (authMethod === 'Service Account') return <Shield className="w-4 h-4" />
+    if (authMethod === 'API Key') return <Key className="w-4 h-4" />
+    return <AlertCircle className="w-4 h-4" />
+  }
+
+  const getAuthColor = (authMethod: string) => {
+    if (authMethod === 'Service Account') return 'bg-green-100 text-green-800 border-green-300'
+    if (authMethod === 'API Key') return 'bg-blue-100 text-blue-800 border-blue-300'
+    return 'bg-red-100 text-red-800 border-red-300'
+  }
+
   return (
     <motion.div
       className="border-2 border-dashed border-blue-300 rounded-2xl p-8 transition-all duration-300 bg-gradient-to-br from-blue-50 to-indigo-50"
@@ -188,9 +200,15 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
                 <span className="font-bold text-green-800">Google Vision API Active!</span>
                 <Globe className="w-5 h-5 text-green-600" />
               </div>
-              <p className="text-green-700 text-sm">
+              <p className="text-green-700 text-sm mb-3">
                 🎉 Your Google Cloud Vision API is configured and ready! This provides industry-leading text recognition accuracy.
               </p>
+              <div className="flex justify-center">
+                <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${getAuthColor(serviceInfo.authMethod)}`}>
+                  {getAuthIcon(serviceInfo.authMethod)}
+                  {serviceInfo.authMethod} Authentication
+                </span>
+              </div>
             </div>
           ) : (
             <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
@@ -199,7 +217,7 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
                 <span className="font-bold text-red-800">Google Vision API Not Configured</span>
               </div>
               <p className="text-red-700 text-sm">
-                ⚠️ Google Vision API key not found. Please add VITE_GOOGLE_VISION_API_KEY to your .env file.
+                ⚠️ Google Vision API not configured. Please add VITE_GOOGLE_VISION_API_KEY or VITE_GOOGLE_SERVICE_ACCOUNT to your .env file.
               </p>
             </div>
           )}
@@ -279,6 +297,10 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getConfidenceColor(ocrResult.confidence)}`}>
                       {Math.round(ocrResult.confidence * 100)}% confidence
                     </span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getAuthColor(ocrResult.authMethod)}`}>
+                      {getAuthIcon(ocrResult.authMethod)}
+                      {ocrResult.authMethod}
+                    </span>
                   </div>
                 )}
               </div>
@@ -356,6 +378,10 @@ export const EnhancedGoogleLensSection: React.FC<EnhancedGoogleLensSectionProps>
                     </span>
                     <span className="text-xs text-blue-600">
                       {ocrResult.processingTime}ms
+                    </span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getAuthColor(ocrResult.authMethod)}`}>
+                      {getAuthIcon(ocrResult.authMethod)}
+                      {ocrResult.authMethod}
                     </span>
                   </div>
                 </div>
