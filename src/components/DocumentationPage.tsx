@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, BookOpen, FileText, Download, Play, Eye, Users, Target, Heart, Brain, Clock, Sparkles, Calendar } from 'lucide-react'
+import { ArrowLeft, BookOpen, FileText, Download, Play, Eye, Users, Target, Heart, Brain, Clock, Sparkles, Calendar, ExternalLink } from 'lucide-react'
 import { VanguardScene } from './3D/VanguardScene'
 
 interface Module {
@@ -16,9 +16,9 @@ interface Module {
 interface Presentation {
   id: string
   title: string
-  type: 'lecture' | 'social'
+  type: 'presentation' | 'thinking-points'
   description: string
-  fileUrl?: string
+  fileUrl: string
   duration?: string
 }
 
@@ -31,18 +31,19 @@ const coreModules: Module[] = [
     color: 'purple',
     presentations: [
       {
-        id: 'day-zero-intro',
-        title: 'Welcome to Vanguard',
-        type: 'lecture',
-        description: 'Introduction to the Vanguard program and its core principles',
+        id: 'day-zero-presentation',
+        title: 'Day Zero Presentation',
+        type: 'presentation',
+        description: 'Foundation and orientation materials for the Vanguard program',
+        fileUrl: 'https://drive.google.com/file/d/1BM93A5KLrSuBlTmWtqCcVMFZf5lZNeuK/view?usp=sharing',
         duration: '45 min'
       },
       {
-        id: 'day-zero-orientation',
-        title: 'Program Orientation',
-        type: 'social',
-        description: 'Interactive session for program overview and expectations',
-        duration: '60 min'
+        id: 'day-zero-thinking',
+        title: 'Day Zero Thinking Points',
+        type: 'thinking-points',
+        description: 'Key reflection questions and discussion points for Day Zero',
+        fileUrl: 'https://drive.google.com/file/d/1BM93A5KLrSuBlTmWtqCcVMFZf5lZNeuK/view?usp=sharing'
       }
     ]
   },
@@ -54,18 +55,19 @@ const coreModules: Module[] = [
     color: 'red',
     presentations: [
       {
-        id: 'ethics-lecture',
-        title: 'Foundations of Ethics',
-        type: 'lecture',
+        id: 'ethics-presentation',
+        title: 'Ethics Presentation',
+        type: 'presentation',
         description: 'Core principles of ethical thinking and moral reasoning',
+        fileUrl: 'https://drive.google.com/file/d/109caVK5VMl9qER-Lhda2Huw2vUn7ud8s/view?usp=sharing',
         duration: '50 min'
       },
       {
-        id: 'ethics-social',
-        title: 'Ethical Dilemmas Workshop',
-        type: 'social',
-        description: 'Interactive discussion on real-world ethical challenges',
-        duration: '45 min'
+        id: 'ethics-thinking',
+        title: 'Ethics Thinking Points',
+        type: 'thinking-points',
+        description: 'Reflection questions and ethical dilemmas for discussion',
+        fileUrl: 'https://drive.google.com/file/d/109caVK5VMl9qER-Lhda2Huw2vUn7ud8s/view?usp=sharing'
       }
     ]
   },
@@ -77,18 +79,19 @@ const coreModules: Module[] = [
     color: 'pink',
     presentations: [
       {
-        id: 'empathy-lecture',
-        title: 'The Science of Empathy',
-        type: 'lecture',
-        description: 'Understanding empathy from psychological and neurological perspectives',
+        id: 'empathy-presentation',
+        title: 'Empathy Presentation',
+        type: 'presentation',
+        description: 'Understanding empathy from psychological and practical perspectives',
+        fileUrl: 'https://drive.google.com/file/d/1FfA0LY3pyA4y2hmV8zWHjude24ki-bi-/view?usp=sharing',
         duration: '45 min'
       },
       {
-        id: 'empathy-social',
-        title: 'Empathy in Action',
-        type: 'social',
-        description: 'Practical exercises in perspective-taking and emotional awareness',
-        duration: '60 min'
+        id: 'empathy-thinking',
+        title: 'Empathy Thinking Points',
+        type: 'thinking-points',
+        description: 'Exercises in perspective-taking and emotional awareness',
+        fileUrl: 'https://drive.google.com/file/d/1FfA0LY3pyA4y2hmV8zWHjude24ki-bi-/view?usp=sharing'
       }
     ]
   },
@@ -100,18 +103,19 @@ const coreModules: Module[] = [
     color: 'blue',
     presentations: [
       {
-        id: 'communication-lecture',
-        title: 'Principles of Effective Communication',
-        type: 'lecture',
+        id: 'communication-presentation',
+        title: 'Communication Presentation',
+        type: 'presentation',
         description: 'Fundamentals of clear, persuasive, and impactful communication',
+        fileUrl: 'https://drive.google.com/file/d/1yJMW3GO6MaeFwHYAqK6OgKIC_8qkDPZQ/view?usp=sharing',
         duration: '55 min'
       },
       {
-        id: 'communication-social',
-        title: 'Communication Skills Practice',
-        type: 'social',
-        description: 'Hands-on practice with public speaking and interpersonal communication',
-        duration: '75 min'
+        id: 'communication-thinking',
+        title: 'Communication Thinking Points',
+        type: 'thinking-points',
+        description: 'Practice exercises and reflection on communication skills',
+        fileUrl: 'https://drive.google.com/file/d/1yJMW3GO6MaeFwHYAqK6OgKIC_8qkDPZQ/view?usp=sharing'
       }
     ]
   },
@@ -123,18 +127,19 @@ const coreModules: Module[] = [
     color: 'indigo',
     presentations: [
       {
-        id: 'thinking-lecture',
-        title: 'Critical Thinking Framework',
-        type: 'lecture',
+        id: 'thinking-presentation',
+        title: 'Thinking Presentation',
+        type: 'presentation',
         description: 'Systematic approaches to analysis, evaluation, and reasoning',
+        fileUrl: 'https://drive.google.com/file/d/1_b-OHk7x1EkDlSJpIqsUlQGzNBvGD66l/view?usp=sharing',
         duration: '50 min'
       },
       {
-        id: 'thinking-social',
-        title: 'Problem-Solving Workshop',
-        type: 'social',
-        description: 'Collaborative problem-solving exercises and case studies',
-        duration: '90 min'
+        id: 'thinking-thinking',
+        title: 'Thinking Points',
+        type: 'thinking-points',
+        description: 'Problem-solving exercises and critical thinking challenges',
+        fileUrl: 'https://drive.google.com/file/d/1_b-OHk7x1EkDlSJpIqsUlQGzNBvGD66l/view?usp=sharing'
       }
     ]
   },
@@ -146,18 +151,19 @@ const coreModules: Module[] = [
     color: 'green',
     presentations: [
       {
-        id: 'time-lecture',
-        title: 'Time Management Strategies',
-        type: 'lecture',
+        id: 'time-presentation',
+        title: 'Time Management Presentation',
+        type: 'presentation',
         description: 'Proven techniques for prioritization and efficiency',
+        fileUrl: 'https://drive.google.com/file/d/1RXYEu9Yufy_Zpu1BbC8jvfZvFpKnpHG2/view?usp=sharing',
         duration: '40 min'
       },
       {
-        id: 'time-social',
-        title: 'Personal Productivity Planning',
-        type: 'social',
-        description: 'Creating personalized time management systems',
-        duration: '60 min'
+        id: 'time-thinking',
+        title: 'Time Management Thinking Points',
+        type: 'thinking-points',
+        description: 'Personal productivity planning and reflection exercises',
+        fileUrl: 'https://drive.google.com/file/d/1RXYEu9Yufy_Zpu1BbC8jvfZvFpKnpHG2/view?usp=sharing'
       }
     ]
   },
@@ -169,18 +175,19 @@ const coreModules: Module[] = [
     color: 'yellow',
     presentations: [
       {
-        id: 'spectrum-lecture',
-        title: 'Understanding Complex Systems',
-        type: 'lecture',
+        id: 'spectrum-presentation',
+        title: 'The Grand Spectrum Presentation',
+        type: 'presentation',
         description: 'Holistic thinking and interconnected perspectives',
+        fileUrl: 'https://drive.google.com/file/d/1ymsGpzMrTza-4GQeOGy7lb9bdExMW4K9/view?usp=sharing',
         duration: '65 min'
       },
       {
-        id: 'spectrum-social',
-        title: 'Systems Mapping Exercise',
-        type: 'social',
-        description: 'Collaborative mapping of complex real-world systems',
-        duration: '120 min'
+        id: 'spectrum-thinking',
+        title: 'The Grand Spectrum Thinking Points',
+        type: 'thinking-points',
+        description: 'Systems mapping exercises and holistic thinking challenges',
+        fileUrl: 'https://drive.google.com/file/d/1ymsGpzMrTza-4GQeOGy7lb9bdExMW4K9/view?usp=sharing'
       }
     ]
   }
@@ -188,23 +195,9 @@ const coreModules: Module[] = [
 
 const outsideCorePrograms = [
   {
-    id: 'leadership-workshops',
-    name: 'Leadership Workshops',
-    description: 'Advanced leadership development sessions',
-    icon: Target,
-    color: 'orange'
-  },
-  {
-    id: 'community-service',
-    name: 'Community Service Projects',
-    description: 'Hands-on service learning opportunities',
-    icon: Heart,
-    color: 'teal'
-  },
-  {
-    id: 'mentorship',
-    name: 'Mentorship Program',
-    description: 'One-on-one guidance and support',
+    id: 'mentor-training',
+    name: 'Mentor Training',
+    description: 'Comprehensive training program for mentors and facilitators',
     icon: Users,
     color: 'cyan'
   }
@@ -253,6 +246,18 @@ export const DocumentationPage: React.FC = () => {
       cyan: { bg: 'bg-cyan-500/20', border: 'border-cyan-500/30', text: 'text-cyan-400', hover: 'hover:bg-cyan-500/30' }
     }
     return colorMap[color] || colorMap.red
+  }
+
+  const convertToDirectDownloadLink = (driveUrl: string) => {
+    const fileIdMatch = driveUrl.match(/\/d\/([a-zA-Z0-9-_]+)/)
+    if (fileIdMatch) {
+      return `https://drive.google.com/uc?export=download&id=${fileIdMatch[1]}`
+    }
+    return driveUrl
+  }
+
+  const openInNewTab = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer')
   }
 
   if (selectedModule) {
@@ -335,11 +340,11 @@ export const DocumentationPage: React.FC = () => {
                 >
                   <div className="flex items-start justify-between mb-6">
                     <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 ${presentation.type === 'lecture' ? 'bg-blue-500/20 border-blue-500/30' : 'bg-green-500/20 border-green-500/30'} backdrop-blur-sm rounded-2xl flex items-center justify-center border`}>
-                        {presentation.type === 'lecture' ? (
-                          <BookOpen className={`w-6 h-6 ${presentation.type === 'lecture' ? 'text-blue-400' : 'text-green-400'}`} />
+                      <div className={`w-12 h-12 ${presentation.type === 'presentation' ? 'bg-blue-500/20 border-blue-500/30' : 'bg-purple-500/20 border-purple-500/30'} backdrop-blur-sm rounded-2xl flex items-center justify-center border`}>
+                        {presentation.type === 'presentation' ? (
+                          <BookOpen className="w-6 h-6 text-blue-400" />
                         ) : (
-                          <Users className={`w-6 h-6 ${presentation.type === 'lecture' ? 'text-blue-400' : 'text-green-400'}`} />
+                          <Brain className="w-6 h-6 text-purple-400" />
                         )}
                       </div>
                       <div>
@@ -347,11 +352,11 @@ export const DocumentationPage: React.FC = () => {
                         <p className="text-gray-300 mb-2">{presentation.description}</p>
                         <div className="flex items-center gap-4 text-sm">
                           <span className={`px-3 py-1 rounded-full font-medium ${
-                            presentation.type === 'lecture' 
+                            presentation.type === 'presentation' 
                               ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
-                              : 'bg-green-500/20 text-green-400 border border-green-500/30'
+                              : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
                           }`}>
-                            {presentation.type === 'lecture' ? 'Lecture' : 'Social Session'}
+                            {presentation.type === 'presentation' ? 'Presentation' : 'Thinking Points'}
                           </span>
                           {presentation.duration && (
                             <span className="text-gray-400 flex items-center gap-1">
@@ -364,19 +369,19 @@ export const DocumentationPage: React.FC = () => {
                     </div>
                     <div className="flex gap-3">
                       <motion.button
+                        onClick={() => openInNewTab(presentation.fileUrl)}
                         className="flex items-center gap-2 px-4 py-2 bg-blue-600/20 text-blue-400 rounded-xl hover:bg-blue-600/30 transition-colors border border-blue-500/30"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        disabled
                       >
-                        <Eye className="w-4 h-4" />
-                        Preview
+                        <ExternalLink className="w-4 h-4" />
+                        Open in Drive
                       </motion.button>
                       <motion.button
+                        onClick={() => openInNewTab(convertToDirectDownloadLink(presentation.fileUrl))}
                         className="flex items-center gap-2 px-4 py-2 bg-green-600/20 text-green-400 rounded-xl hover:bg-green-600/30 transition-colors border border-green-500/30"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        disabled
                       >
                         <Download className="w-4 h-4" />
                         Download
@@ -384,10 +389,10 @@ export const DocumentationPage: React.FC = () => {
                     </div>
                   </div>
                   
-                  <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-4">
-                    <p className="text-yellow-400 text-sm flex items-center gap-2">
+                  <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-4">
+                    <p className="text-green-400 text-sm flex items-center gap-2">
                       <FileText className="w-4 h-4" />
-                      Presentation file will be available here once uploaded (Expected size: ~75MB)
+                      ✅ Presentation file available on Google Drive (~75MB)
                     </p>
                   </div>
                 </motion.div>
@@ -495,7 +500,7 @@ export const DocumentationPage: React.FC = () => {
                     <p className="text-gray-300 mb-4 leading-relaxed">{module.description}</p>
                     <div className="flex items-center justify-between">
                       <span className={`text-sm ${colors.text} font-semibold bg-black/20 px-3 py-1 rounded-full border border-gray-600/30`}>
-                        {module.presentations.length} presentations
+                        {module.presentations.length} materials
                       </span>
                       <motion.div
                         className={`w-6 h-6 ${colors.text} opacity-70`}
