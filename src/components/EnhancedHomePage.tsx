@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { MessageSquare, Shield, Trophy, HandHeart, ArrowRight, Sparkles } from 'lucide-react'
+import { MessageSquare, Shield, Trophy, HandHeart, ArrowRight, Sparkles, BookOpen } from 'lucide-react'
 import { VanguardScene } from './3D/VanguardScene'
 
 export const EnhancedHomePage: React.FC = () => {
@@ -71,7 +71,8 @@ export const EnhancedHomePage: React.FC = () => {
                   { name: 'HOME', href: '/', active: true },
                   { name: 'ABOUT', href: '/about' },
                   { name: 'VISION', href: '/vision' },
-                  { name: 'PROGRAMS', href: '/programs' }
+                  { name: 'PROGRAMS', href: '/programs' },
+                  { name: 'DOCS', href: '/documentation' }
                 ].map((item) => (
                   <motion.a
                     key={item.name}
@@ -240,59 +241,117 @@ export const EnhancedHomePage: React.FC = () => {
             </p>
           </motion.div>
 
-          {/* Feedback System Card */}
+          {/* Action Cards Grid */}
           <motion.div 
-            className="bg-gradient-to-br from-black/40 to-red-900/20 backdrop-blur-xl rounded-3xl p-12 shadow-2xl border border-red-500/20 text-center"
-            variants={itemVariants}
+            className="grid md:grid-cols-2 gap-8"
+            variants={containerVariants}
             initial="hidden"
             animate="visible"
-            whileHover={{ scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 300 }}
           >
+            {/* Feedback System Card */}
             <motion.div 
-              className="w-20 h-20 bg-red-500/20 backdrop-blur-sm rounded-3xl flex items-center justify-center mb-8 mx-auto border border-red-500/30 relative"
-              animate={{
-                boxShadow: [
-                  "0 0 20px rgba(220, 38, 38, 0.3)",
-                  "0 0 40px rgba(220, 38, 38, 0.5)",
-                  "0 0 20px rgba(220, 38, 38, 0.3)"
-                ]
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
+              className="bg-gradient-to-br from-black/40 to-red-900/20 backdrop-blur-xl rounded-3xl p-12 shadow-2xl border border-red-500/20 text-center"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
-              <motion.div
-                whileHover={{ rotate: 360, scale: 1.1 }}
-                transition={{ duration: 0.6 }}
-                className="absolute inset-0 rounded-3xl"
-              />
-              <MessageSquare className="w-10 h-10 text-red-400 relative z-10" />
-            </motion.div>
-            
-            <h3 className="text-3xl font-bold text-white mb-6">Candidate Feedback System</h3>
-            <p className="text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed text-lg">
-              Access the comprehensive feedback system to evaluate and guide our Vanguard candidates.
-              Your input helps shape tomorrow's leaders.
-            </p>
-            
-            <Link to="/candidates">
-              <motion.button
-                className="inline-flex items-center gap-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-bold px-10 py-5 rounded-2xl shadow-lg shadow-red-500/25 border border-red-500/30 transition-all duration-300"
-                whileHover={{ 
-                  scale: 1.05, 
-                  y: -3,
-                  boxShadow: "0 20px 40px rgba(220, 38, 38, 0.4)"
+              <motion.div 
+                className="w-20 h-20 bg-red-500/20 backdrop-blur-sm rounded-3xl flex items-center justify-center mb-8 mx-auto border border-red-500/30 relative"
+                animate={{
+                  boxShadow: [
+                    "0 0 20px rgba(220, 38, 38, 0.3)",
+                    "0 0 40px rgba(220, 38, 38, 0.5)",
+                    "0 0 20px rgba(220, 38, 38, 0.3)"
+                  ]
                 }}
-                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 2, repeat: Infinity }}
               >
-                <span className="text-lg">Access Feedback System</span>
                 <motion.div
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
+                  whileHover={{ rotate: 360, scale: 1.1 }}
+                  transition={{ duration: 0.6 }}
+                  className="absolute inset-0 rounded-3xl"
+                />
+                <MessageSquare className="w-10 h-10 text-red-400 relative z-10" />
+              </motion.div>
+              
+              <h3 className="text-3xl font-bold text-white mb-6">Candidate Feedback System</h3>
+              <p className="text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed text-lg">
+                Access the comprehensive feedback system to evaluate and guide our Vanguard candidates.
+                Your input helps shape tomorrow's leaders.
+              </p>
+              
+              <Link to="/candidates">
+                <motion.button
+                  className="inline-flex items-center gap-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-bold px-10 py-5 rounded-2xl shadow-lg shadow-red-500/25 border border-red-500/30 transition-all duration-300"
+                  whileHover={{ 
+                    scale: 1.05, 
+                    y: -3,
+                    boxShadow: "0 20px 40px rgba(220, 38, 38, 0.4)"
+                  }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <ArrowRight className="w-6 h-6" />
-                </motion.div>
-              </motion.button>
-            </Link>
+                  <span className="text-lg">Access Feedback System</span>
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    <ArrowRight className="w-6 h-6" />
+                  </motion.div>
+                </motion.button>
+              </Link>
+            </motion.div>
+
+            {/* Documentation Card */}
+            <motion.div 
+              className="bg-gradient-to-br from-black/40 to-blue-900/20 backdrop-blur-xl rounded-3xl p-12 shadow-2xl border border-blue-500/20 text-center"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <motion.div 
+                className="w-20 h-20 bg-blue-500/20 backdrop-blur-sm rounded-3xl flex items-center justify-center mb-8 mx-auto border border-blue-500/30 relative"
+                animate={{
+                  boxShadow: [
+                    "0 0 20px rgba(59, 130, 246, 0.3)",
+                    "0 0 40px rgba(59, 130, 246, 0.5)",
+                    "0 0 20px rgba(59, 130, 246, 0.3)"
+                  ]
+                }}
+                transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+              >
+                <motion.div
+                  whileHover={{ rotate: 360, scale: 1.1 }}
+                  transition={{ duration: 0.6 }}
+                  className="absolute inset-0 rounded-3xl"
+                />
+                <BookOpen className="w-10 h-10 text-blue-400 relative z-10" />
+              </motion.div>
+              
+              <h3 className="text-3xl font-bold text-white mb-6">Program Documentation</h3>
+              <p className="text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed text-lg">
+                Access comprehensive program materials, presentations, and resources for the Vanguard leadership development journey.
+              </p>
+              
+              <Link to="/documentation">
+                <motion.button
+                  className="inline-flex items-center gap-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold px-10 py-5 rounded-2xl shadow-lg shadow-blue-500/25 border border-blue-500/30 transition-all duration-300"
+                  whileHover={{ 
+                    scale: 1.05, 
+                    y: -3,
+                    boxShadow: "0 20px 40px rgba(59, 130, 246, 0.4)"
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span className="text-lg">View Documentation</span>
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    <ArrowRight className="w-6 h-6" />
+                  </motion.div>
+                </motion.button>
+              </Link>
+            </motion.div>
           </motion.div>
         </div>
       </div>
