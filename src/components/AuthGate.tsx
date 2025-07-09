@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Shield, Lock, Eye, EyeOff, Terminal, Zap, Crown, Star } from 'lucide-react'
+import { Shield, Lock, Eye, EyeOff, Terminal, Zap, Crown, Star, CheckCircle } from 'lucide-react'
 
 interface AuthGateProps {
   children: React.ReactNode
@@ -15,6 +15,7 @@ export const AuthGate: React.FC<AuthGateProps> = ({ children, onAuthenticated })
   const [error, setError] = useState('')
   const [hackerText, setHackerText] = useState('')
   const [showMatrix, setShowMatrix] = useState(true)
+  const [showAccessGranted, setShowAccessGranted] = useState(false)
 
   const correctPassword = 'THISWEBSITEISNOTGOINGDOWN'
 
@@ -68,7 +69,7 @@ export const AuthGate: React.FC<AuthGateProps> = ({ children, onAuthenticated })
       'INITIALIZING SECURE CONNECTION...',
       'SCANNING NETWORK PROTOCOLS...',
       'ESTABLISHING ENCRYPTED TUNNEL...',
-      'VANGUARD SECURITY SYSTEM ACTIVE',
+      'SECURITY PROTOCOL 2.0 ACTIVE',
       'AWAITING AUTHENTICATION...'
     ]
 
@@ -97,6 +98,41 @@ export const AuthGate: React.FC<AuthGateProps> = ({ children, onAuthenticated })
     return () => clearTimeout(timeout)
   }, [])
 
+  // Access granted animation effect
+  useEffect(() => {
+    if (showAccessGranted) {
+      const accessGrantedMessages = [
+        'AUTHENTICATION SUCCESSFUL...',
+        'DECRYPTING SECURE DATA...',
+        'LOADING CLASSIFIED CONTENT...',
+        'ACCESS GRANTED - WELCOME TO VANGUARD'
+      ]
+
+      let messageIndex = 0
+      let charIndex = 0
+
+      const typeAccessMessage = () => {
+        if (messageIndex < accessGrantedMessages.length) {
+          if (charIndex < accessGrantedMessages[messageIndex].length) {
+            setHackerText(accessGrantedMessages[messageIndex].substring(0, charIndex + 1))
+            charIndex++
+            setTimeout(typeAccessMessage, 30)
+          } else {
+            setTimeout(() => {
+              messageIndex++
+              charIndex = 0
+              if (messageIndex < accessGrantedMessages.length) {
+                typeAccessMessage()
+              }
+            }, 800)
+          }
+        }
+      }
+
+      typeAccessMessage()
+    }
+  }, [showAccessGranted])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
@@ -106,11 +142,16 @@ export const AuthGate: React.FC<AuthGateProps> = ({ children, onAuthenticated })
     await new Promise(resolve => setTimeout(resolve, 2000))
 
     if (password === correctPassword) {
-      setIsAuthenticated(true)
-      setShowMatrix(false)
+      setShowAccessGranted(true)
+      
+      // Show access granted animation for 3 seconds
       setTimeout(() => {
-        onAuthenticated()
-      }, 1500)
+        setIsAuthenticated(true)
+        setShowMatrix(false)
+        setTimeout(() => {
+          onAuthenticated()
+        }, 1500)
+      }, 3000)
     } else {
       setError('ACCESS DENIED - INVALID CREDENTIALS')
       setPassword('')
@@ -249,153 +290,197 @@ export const AuthGate: React.FC<AuthGateProps> = ({ children, onAuthenticated })
                 <Terminal className="w-4 h-4 text-yellow-400" />
                 <span className="text-yellow-400 text-sm font-mono">SYSTEM STATUS</span>
               </div>
-              <motion.p 
-                className="text-yellow-300 font-mono text-sm"
+              
+              {/* Enhanced status display with animations */}
+              <motion.div
+                className="relative"
                 key={hackerText}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                {hackerText}
-                <motion.span
-                  className="inline-block w-2 h-4 bg-yellow-400 ml-1"
-                  animate={{ opacity: [1, 0, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                />
-              </motion.p>
+                {showAccessGranted ? (
+                  <motion.div
+                    className="flex items-center gap-2"
+                    initial={{ scale: 0.8 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <motion.div
+                      animate={{ 
+                        rotate: 360,
+                        scale: [1, 1.2, 1]
+                      }}
+                      transition={{ 
+                        rotate: { duration: 2, repeat: Infinity, ease: "linear" },
+                        scale: { duration: 1, repeat: Infinity }
+                      }}
+                    >
+                      <CheckCircle className="w-5 h-5 text-green-400" />
+                    </motion.div>
+                    <motion.p 
+                      className="text-green-300 font-mono text-sm font-bold"
+                      animate={{ 
+                        textShadow: [
+                          "0 0 10px rgba(74, 222, 128, 0.5)",
+                          "0 0 20px rgba(74, 222, 128, 0.8)",
+                          "0 0 10px rgba(74, 222, 128, 0.5)"
+                        ]
+                      }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      {hackerText}
+                    </motion.p>
+                  </motion.div>
+                ) : (
+                  <p className="text-yellow-300 font-mono text-sm">
+                    {hackerText}
+                    <motion.span
+                      className="inline-block w-2 h-4 bg-yellow-400 ml-1"
+                      animate={{ opacity: [1, 0, 1] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                    />
+                  </p>
+                )}
+              </motion.div>
             </motion.div>
           </motion.div>
 
           {/* Authentication Form */}
-          <motion.div
-            className="bg-gradient-to-br from-black/80 via-yellow-900/10 to-black/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-yellow-500/30"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 1.5 }}
-          >
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="text-center mb-6">
-                <motion.div
-                  className="flex items-center justify-center gap-2 mb-4"
-                  animate={{ 
-                    textShadow: [
-                      "0 0 10px rgba(255, 215, 0, 0.5)",
-                      "0 0 20px rgba(255, 215, 0, 0.8)",
-                      "0 0 10px rgba(255, 215, 0, 0.5)"
-                    ]
-                  }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  <Lock className="w-6 h-6 text-yellow-400" />
-                  <span className="text-yellow-300 font-bold text-lg">SECURE LOGIN</span>
-                  <Zap className="w-6 h-6 text-yellow-400" />
-                </motion.div>
-                <p className="text-yellow-400/80 text-sm font-mono">
-                  ENTER AUTHORIZATION CODE TO PROCEED
-                </p>
-              </div>
-
-              <div className="relative">
-                <label className="block text-yellow-300 text-sm font-bold mb-3 font-mono">
-                  ACCESS CODE
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value.toUpperCase())}
-                    className="w-full px-4 py-4 bg-black/60 border-2 border-yellow-500/50 rounded-xl text-yellow-300 font-mono text-lg focus:outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/20 transition-all duration-300 placeholder-yellow-600/50"
-                    placeholder="ENTER PASSWORD"
-                    disabled={isLoading}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-yellow-400 hover:text-yellow-300 transition-colors"
-                    disabled={isLoading}
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-              </div>
-
-              <AnimatePresence>
-                {error && (
-                  <motion.div
-                    className="bg-red-900/50 border border-red-500/50 rounded-xl p-4"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Terminal className="w-5 h-5 text-red-400" />
-                      <span className="text-red-300 font-mono text-sm font-bold">{error}</span>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <motion.button
-                type="submit"
-                disabled={isLoading || !password}
-                className="w-full py-4 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-600 text-black font-bold text-lg rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 border-2 border-yellow-300"
-                whileHover={{ 
-                  scale: 1.02,
-                  boxShadow: "0 0 30px rgba(255, 215, 0, 0.6)"
-                }}
-                whileTap={{ scale: 0.98 }}
-                animate={isLoading ? {
-                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
-                } : {}}
-                transition={isLoading ? { 
-                  duration: 2, 
-                  repeat: Infinity,
-                  ease: "linear"
-                } : {}}
-                style={{ backgroundSize: "200% 200%" }}
+          <AnimatePresence>
+            {!showAccessGranted && (
+              <motion.div
+                className="bg-gradient-to-br from-black/80 via-yellow-900/10 to-black/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-yellow-500/30"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9, y: -50 }}
+                transition={{ duration: 0.8, delay: 1.5 }}
               >
-                {isLoading ? (
-                  <div className="flex items-center justify-center gap-3">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="text-center mb-6">
                     <motion.div
-                      className="w-6 h-6 border-3 border-black border-t-transparent rounded-full"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    />
-                    <span className="font-mono">AUTHENTICATING...</span>
+                      className="flex items-center justify-center gap-2 mb-4"
+                      animate={{ 
+                        textShadow: [
+                          "0 0 10px rgba(255, 215, 0, 0.5)",
+                          "0 0 20px rgba(255, 215, 0, 0.8)",
+                          "0 0 10px rgba(255, 215, 0, 0.5)"
+                        ]
+                      }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      <Lock className="w-6 h-6 text-yellow-400" />
+                      <span className="text-yellow-300 font-bold text-lg">SECURE LOGIN</span>
+                      <Zap className="w-6 h-6 text-yellow-400" />
+                    </motion.div>
+                    <p className="text-yellow-400/80 text-sm font-mono">
+                      ENTER AUTHORIZATION CODE TO PROCEED
+                    </p>
                   </div>
-                ) : (
-                  <div className="flex items-center justify-center gap-3">
-                    <Star className="w-6 h-6" />
-                    <span className="font-mono">AUTHENTICATE</span>
-                    <Star className="w-6 h-6" />
-                  </div>
-                )}
-              </motion.button>
-            </form>
 
-            {/* Decorative Elements */}
-            <div className="mt-8 pt-6 border-t border-yellow-500/20">
-              <div className="flex items-center justify-center gap-4 text-yellow-600/60">
-                <motion.div
-                  className="w-2 h-2 bg-yellow-400 rounded-full"
-                  animate={{ opacity: [0.3, 1, 0.3] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0 }}
-                />
-                <motion.div
-                  className="w-2 h-2 bg-yellow-400 rounded-full"
-                  animate={{ opacity: [0.3, 1, 0.3] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                />
-                <motion.div
-                  className="w-2 h-2 bg-yellow-400 rounded-full"
-                  animate={{ opacity: [0.3, 1, 0.3] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-                />
-              </div>
-              <p className="text-center text-yellow-600/60 text-xs font-mono mt-4">
-                VANGUARD SECURITY PROTOCOL v2.0
-              </p>
-            </div>
-          </motion.div>
+                  <div className="relative">
+                    <label className="block text-yellow-300 text-sm font-bold mb-3 font-mono">
+                      ACCESS CODE
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value.toUpperCase())}
+                        className="w-full px-4 py-4 bg-black/60 border-2 border-yellow-500/50 rounded-xl text-yellow-300 font-mono text-lg focus:outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/20 transition-all duration-300 placeholder-yellow-600/50"
+                        placeholder="ENTER PASSWORD"
+                        disabled={isLoading}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-yellow-400 hover:text-yellow-300 transition-colors"
+                        disabled={isLoading}
+                      >
+                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <AnimatePresence>
+                    {error && (
+                      <motion.div
+                        className="bg-red-900/50 border border-red-500/50 rounded-xl p-4"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Terminal className="w-5 h-5 text-red-400" />
+                          <span className="text-red-300 font-mono text-sm font-bold">{error}</span>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <motion.button
+                    type="submit"
+                    disabled={isLoading || !password}
+                    className="w-full py-4 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-600 text-black font-bold text-lg rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 border-2 border-yellow-300"
+                    whileHover={{ 
+                      scale: 1.02,
+                      boxShadow: "0 0 30px rgba(255, 215, 0, 0.6)"
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                    animate={isLoading ? {
+                      backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+                    } : {}}
+                    transition={isLoading ? { 
+                      duration: 2, 
+                      repeat: Infinity,
+                      ease: "linear"
+                    } : {}}
+                    style={{ backgroundSize: "200% 200%" }}
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center justify-center gap-3">
+                        <motion.div
+                          className="w-6 h-6 border-3 border-black border-t-transparent rounded-full"
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        />
+                        <span className="font-mono">AUTHENTICATING...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-3">
+                        <Star className="w-6 h-6" />
+                        <span className="font-mono">AUTHENTICATE</span>
+                        <Star className="w-6 h-6" />
+                      </div>
+                    )}
+                  </motion.button>
+                </form>
+
+                {/* Decorative Elements */}
+                <div className="mt-8 pt-6 border-t border-yellow-500/20">
+                  <div className="flex items-center justify-center gap-4 text-yellow-600/60">
+                    <motion.div
+                      className="w-2 h-2 bg-yellow-400 rounded-full"
+                      animate={{ opacity: [0.3, 1, 0.3] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 0 }}
+                    />
+                    <motion.div
+                      className="w-2 h-2 bg-yellow-400 rounded-full"
+                      animate={{ opacity: [0.3, 1, 0.3] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                    />
+                    <motion.div
+                      className="w-2 h-2 bg-yellow-400 rounded-full"
+                      animate={{ opacity: [0.3, 1, 0.3] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                    />
+                  </div>
+                  <p className="text-center text-yellow-600/60 text-xs font-mono mt-4">
+                    SECURITY PROTOCOL 2.0
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Bottom Warning */}
           <motion.div
