@@ -1,5 +1,7 @@
 import React from 'react'
+import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { AuthGate } from './components/AuthGate'
 import { EnhancedHomePage } from './components/EnhancedHomePage'
 import { AboutPage } from './components/AboutPage'
 import { VisionPage } from './components/VisionPage'
@@ -10,6 +12,16 @@ import { EnhancedClassTypeSelection } from './components/EnhancedClassTypeSelect
 import { EnhancedFeedbackOverview } from './components/EnhancedFeedbackOverview'
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  if (!isAuthenticated) {
+    return (
+      <AuthGate onAuthenticated={() => setIsAuthenticated(true)}>
+        <div />
+      </AuthGate>
+    )
+  }
+
   return (
     <Router>
       <Routes>
