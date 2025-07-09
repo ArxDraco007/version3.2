@@ -16,7 +16,7 @@ export const AuthGate: React.FC<AuthGateProps> = ({ children, onAuthenticated })
   const [hackerText, setHackerText] = useState('')
   const [showMatrix, setShowMatrix] = useState(true)
 
-  const correctPassword = 'VANGUARD2025'
+  const correctPassword = 'THISWEBSITEISNOTGOINGDOWN'
 
   // Matrix rain effect
   useEffect(() => {
