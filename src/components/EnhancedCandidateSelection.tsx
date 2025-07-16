@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, User, MessageSquare, Users, TrendingUp } from 'lucide-react'
-import { candidates } from '../data/candidates'
+import { candidatesWithClasses } from '../data/classes'
 import { VanguardScene } from './3D/VanguardScene'
 
 export const EnhancedCandidateSelection: React.FC = () => {
@@ -60,7 +60,7 @@ export const EnhancedCandidateSelection: React.FC = () => {
                   <div className="text-sm text-red-300 flex items-center gap-2">
                     <Users className="w-4 h-4" />
                     {candidates.length} Candidates
-                  </div>
+                  {candidatesWithClasses.length} Candidates
                 </div>
               </div>
             </div>
@@ -88,7 +88,7 @@ export const EnhancedCandidateSelection: React.FC = () => {
             initial="hidden"
             animate="visible"
           >
-            {candidates.map((candidate, index) => (
+            {candidatesWithClasses.map((candidate, index) => (
               <motion.div
                 key={candidate.id}
                 variants={itemVariants}

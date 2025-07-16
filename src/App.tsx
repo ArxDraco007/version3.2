@@ -10,6 +10,9 @@ import { DocumentationPage } from './components/DocumentationPage'
 import { EnhancedCandidateSelection } from './components/EnhancedCandidateSelection'
 import { EnhancedClassTypeSelection } from './components/EnhancedClassTypeSelection'
 import { EnhancedFeedbackOverview } from './components/EnhancedFeedbackOverview'
+import { CandidateManagement } from './components/CandidateManagement'
+import { SessionsPage } from './components/SessionsPage'
+import { AllFeedbackPage } from './components/AllFeedbackPage'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -31,6 +34,9 @@ function App() {
         <Route path="/programs" element={<ProgramsPage />} />
         <Route path="/documentation" element={<DocumentationPage />} />
         <Route path="/documentation/:moduleId" element={<DocumentationPage />} />
+        <Route path="/manage-candidates" element={<CandidateManagement />} />
+        <Route path="/sessions" element={<SessionsPage />} />
+        <Route path="/all-feedback" element={<AllFeedbackPage />} />
         <Route path="/candidates" element={<EnhancedCandidateSelection />} />
         <Route path="/candidate/:candidateId/class-type" element={<EnhancedClassTypeSelection />} />
         <Route path="/candidate/:candidateId/feedback/:moduleId/:sessionType" element={<EnhancedFeedbackOverview />} />

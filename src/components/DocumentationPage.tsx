@@ -203,6 +203,33 @@ const outsideCorePrograms = [
   }
 ]
 
+const backFromVacationPrograms = [
+  {
+    id: 'back-from-vacation',
+    name: 'Back From Vacation',
+    description: 'Re-engagement and transition support for returning participants',
+    icon: Calendar,
+    color: 'teal',
+    presentations: [
+      {
+        id: 'vacation-reentry',
+        title: 'Back From Vacation - Re-entry Guide',
+        type: 'presentation',
+        description: 'Comprehensive guide for smooth transition back to program activities',
+        fileUrl: 'https://drive.google.com/file/d/1example-vacation-reentry/view?usp=sharing',
+        duration: '30 min'
+      },
+      {
+        id: 'vacation-reflection',
+        title: 'Post-Vacation Reflection Points',
+        type: 'thinking-points',
+        description: 'Reflection exercises to integrate vacation experiences with program learning',
+        fileUrl: 'https://drive.google.com/file/d/1example-vacation-reflection/view?usp=sharing'
+      }
+    ]
+  }
+]
+
 export const DocumentationPage: React.FC = () => {
   const { moduleId } = useParams<{ moduleId?: string }>()
   const [selectedModule, setSelectedModule] = useState<Module | null>(
@@ -531,10 +558,38 @@ export const DocumentationPage: React.FC = () => {
             </motion.h2>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {outsideCorePrograms.map((program, index) => {
+              {[...outsideCorePrograms, ...backFromVacationPrograms].map((program, index) => {
                 const colors = getColorClasses(program.color)
                 return (
-                  <motion.div
+                  program.presentations ? (
+                    <motion.button
+                      key={program.id}
+                      onClick={() => setSelectedModule(program)}
+                      className={`${colors.bg} backdrop-blur-xl rounded-3xl p-8 shadow-2xl border ${colors.border} ${colors.hover} transition-all duration-300 text-left w-full`}
+                      variants={itemVariants}
+                      whileHover={{ scale: 1.05, y: -10 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <div className={`w-16 h-16 ${colors.bg} backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 border ${colors.border}`}>
+                        <program.icon className={`w-8 h-8 ${colors.text}`} />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-3">{program.name}</h3>
+                      <p className="text-gray-300 mb-4 leading-relaxed">{program.description}</p>
+                      <div className="flex items-center justify-between">
+                        <span className={`text-sm ${colors.text} font-semibold bg-black/20 px-3 py-1 rounded-full border border-gray-600/30`}>
+                          {program.presentations.length} materials
+                        </span>
+                        <motion.div
+                          className={`w-6 h-6 ${colors.text} opacity-70`}
+                          animate={{ x: [0, 5, 0] }}
+                          transition={{ duration: 1.5, repeat: Infinity }}
+                        >
+                          →
+                        </motion.div>
+                      </div>
+                    </motion.button>
+                  ) : (
+                    <motion.div
                     key={program.id}
                     className={`${colors.bg} backdrop-blur-xl rounded-3xl p-8 shadow-2xl border ${colors.border} transition-all duration-300`}
                     variants={itemVariants}
@@ -551,6 +606,7 @@ export const DocumentationPage: React.FC = () => {
                       </p>
                     </div>
                   </motion.div>
+                  )
                 )
               })}
             </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { MessageSquare, Shield, Trophy, HandHeart, ArrowRight, Sparkles, BookOpen } from 'lucide-react'
+import { MessageSquare, Shield, Trophy, HandHeart, ArrowRight, Sparkles, BookOpen, CheckSquare, Users, BarChart3 } from 'lucide-react'
 import { VanguardScene } from './3D/VanguardScene'
 
 export const EnhancedHomePage: React.FC = () => {

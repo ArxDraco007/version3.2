@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, User, MessageSquare, Plus, Edit3, Trash2, TrendingUp, Award, Target } from 'lucide-react'
-import { candidates } from '../data/candidates'
+import { candidatesWithClasses } from '../data/classes'
 import { modules } from '../data/modules'
 import { supabase } from '../lib/supabase'
 import { EnhancedFeedbackModal } from './EnhancedFeedbackModal'
@@ -31,7 +31,7 @@ export const EnhancedFeedbackOverview: React.FC = () => {
   const [showModal, setShowModal] = useState(false)
   const [editingFeedback, setEditingFeedback] = useState<Feedback | null>(null)
   
-  const candidate = candidates.find(c => c.id === candidateId)
+  const candidate = candidatesWithClasses.find(c => c.id === candidateId)
   const module = modules.find(m => m.id === moduleId)
   const isOutsideClass = moduleId === 'outside-class'
 

@@ -2,13 +2,13 @@ import React from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, User, GraduationCap, MessageSquare, ChevronUp, ChevronDown, BookOpen, Users } from 'lucide-react'
-import { candidates } from '../data/candidates'
+import { candidatesWithClasses } from '../data/classes'
 import { modules } from '../data/modules'
 import { VanguardScene } from './3D/VanguardScene'
 
 export const EnhancedClassTypeSelection: React.FC = () => {
   const { candidateId } = useParams<{ candidateId: string }>()
-  const candidate = candidates.find(c => c.id === candidateId)
+  const candidate = candidatesWithClasses.find(c => c.id === candidateId)
   const [expandedModules, setExpandedModules] = React.useState<string[]>(['ethics', 'empathy', 'communication'])
 
   if (!candidate) {
