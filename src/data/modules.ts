@@ -5,7 +5,9 @@ export const modules = [
     type: 'Vanguard Core Module',
     sessions: [
       { id: 'lecture', name: 'Lecture', type: 'lecture' },
-      { id: 'social', name: 'Social', type: 'social' }
+      { id: 'social', name: 'Social', type: 'social' },
+      { id: 'dexconnect', name: 'DexConnect Meetup', type: 'dexconnect' },
+      { id: 'retraining', name: 'Retraining Program', type: 'retraining' }
     ]
   },
   {
@@ -14,7 +16,9 @@ export const modules = [
     type: 'Vanguard Core Module',
     sessions: [
       { id: 'lecture', name: 'Lecture', type: 'lecture' },
-      { id: 'social', name: 'Social', type: 'social' }
+      { id: 'social', name: 'Social', type: 'social' },
+      { id: 'dexconnect', name: 'DexConnect Meetup', type: 'dexconnect' },
+      { id: 'retraining', name: 'Retraining Program', type: 'retraining' }
     ]
   },
   {
@@ -23,7 +27,9 @@ export const modules = [
     type: 'Vanguard Core Module',
     sessions: [
       { id: 'lecture', name: 'Lecture', type: 'lecture' },
-      { id: 'social', name: 'Social', type: 'social' }
+      { id: 'social', name: 'Social', type: 'social' },
+      { id: 'dexconnect', name: 'DexConnect Meetup', type: 'dexconnect' },
+      { id: 'retraining', name: 'Retraining Program', type: 'retraining' }
     ]
   },
   {
@@ -32,7 +38,9 @@ export const modules = [
     type: 'Vanguard Core Module',
     sessions: [
       { id: 'lecture', name: 'Lecture', type: 'lecture' },
-      { id: 'social', name: 'Social', type: 'social' }
+      { id: 'social', name: 'Social', type: 'social' },
+      { id: 'dexconnect', name: 'DexConnect Meetup', type: 'dexconnect' },
+      { id: 'retraining', name: 'Retraining Program', type: 'retraining' }
     ]
   },
   {
@@ -41,7 +49,9 @@ export const modules = [
     type: 'Vanguard Core Module',
     sessions: [
       { id: 'lecture', name: 'Lecture', type: 'lecture' },
-      { id: 'social', name: 'Social', type: 'social' }
+      { id: 'social', name: 'Social', type: 'social' },
+      { id: 'dexconnect', name: 'DexConnect Meetup', type: 'dexconnect' },
+      { id: 'retraining', name: 'Retraining Program', type: 'retraining' }
     ]
   },
   {
@@ -50,7 +60,9 @@ export const modules = [
     type: 'Vanguard Special Module',
     sessions: [
       { id: 'lecture', name: 'Lecture', type: 'lecture' },
-      { id: 'social', name: 'Social', type: 'social' }
+      { id: 'social', name: 'Social', type: 'social' },
+      { id: 'dexconnect', name: 'DexConnect Meetup', type: 'dexconnect' },
+      { id: 'retraining', name: 'Retraining Program', type: 'retraining' }
     ]
   }
-];
+]
