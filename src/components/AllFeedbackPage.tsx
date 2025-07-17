@@ -224,7 +224,7 @@ export const AllFeedbackPage: React.FC = () => {
               >
                 <option value="all">All Modules</option>
                 <option value="outside-class">Outside Class</option>
-                {modules.map(module => (
+                {modules.sort((a, b) => a.name.localeCompare(b.name)).map(module => (
                   <option key={module.id} value={module.id}>{module.name}</option>
                 ))}
               </select>

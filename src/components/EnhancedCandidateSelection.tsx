@@ -88,7 +88,7 @@ export const EnhancedCandidateSelection: React.FC = () => {
             initial="hidden"
             animate="visible"
           >
-            {candidatesWithClasses.map((candidate, index) => (
+            {candidatesWithClasses.sort((a, b) => a.name.localeCompare(b.name)).map((candidate, index) => (
               <motion.div
                 key={candidate.id}
                 variants={itemVariants}

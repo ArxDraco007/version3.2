@@ -121,7 +121,7 @@ export const EnhancedClassTypeSelection: React.FC = () => {
               </div>
 
               <div className="space-y-4 max-h-96 overflow-y-auto">
-                {modules.map((module, index) => (
+                {modules.sort((a, b) => a.name.localeCompare(b.name)).map((module, index) => (
                   <motion.div 
                     key={module.id} 
                     className="border border-gray-600/30 rounded-2xl overflow-hidden shadow-sm"
