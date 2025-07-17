@@ -230,33 +230,6 @@ const backFromVacationPrograms = [
   }
 ]
 
-const backFromVacationPrograms = [
-  {
-    id: 'back-from-vacation',
-    name: 'Back From Vacation',
-    description: 'Re-engagement and transition support for returning participants',
-    icon: Calendar,
-    color: 'teal',
-    presentations: [
-      {
-        id: 'vacation-reentry',
-        title: 'Back From Vacation - Re-entry Guide',
-        type: 'presentation',
-        description: 'Comprehensive guide for smooth transition back to program activities',
-        fileUrl: 'https://drive.google.com/file/d/1example-vacation-reentry/view?usp=sharing',
-        duration: '30 min'
-      },
-      {
-        id: 'vacation-reflection',
-        title: 'Post-Vacation Reflection Points',
-        type: 'thinking-points',
-        description: 'Reflection exercises to integrate vacation experiences with program learning',
-        fileUrl: 'https://drive.google.com/file/d/1example-vacation-reflection/view?usp=sharing'
-      }
-    ]
-  }
-]
-
 export const DocumentationPage: React.FC = () => {
   const { moduleId } = useParams<{ moduleId?: string }>()
   const [selectedModule, setSelectedModule] = useState<Module | null>(
